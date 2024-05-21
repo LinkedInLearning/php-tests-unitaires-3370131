@@ -1,6 +1,6 @@
-# Nom final de la formation
+#  PHP : Les tests unitaires et clean code
 
-Ce dossier Repository est lié au cours `Nom final de la formation`. Le cours entier est disponible sur [LinkedIn Learning][lil-course-url].
+Ce dossier Repository est lié au cours ` PHP : Les tests unitaires et clean code`. Le cours entier est disponible sur [LinkedIn Learning][lil-course-url].
 
 ![Nom final de la formation][lil-thumbnail-url] 
 
@@ -29,13 +29,13 @@ La branche master correspond au code à la fin de la formation.
 
 ### Formateur
 
-**Nom du formateur** 
+**Julian Layen** 
 
  Retrouvez mes autres formations sur [LinkedIn Learning][lil-URL-trainer].
 
 [0]: # (Replace these placeholder URLs with actual course URLs)
-[lil-course-url]: https://www.linkedin.com
-[lil-thumbnail-url]: https:
-[lil-URL-trainer]: https://
+[lil-course-url]: https://www.linkedin.com/learning/php-les-tests-unitaires-et-clean-code
+[lil-thumbnail-url]: https://media.licdn.com/dms/image/D4E0DAQGqInxaosUkjA/learning-public-crop_675_1200/0/1716285163650?e=2147483647&v=beta&t=K0Wu3WjAYR-cs3jDHROcYvIEiakEZfRBO13kQ1jrciY
+[lil-URL-trainer]: https://www.linkedin.com/learning/instructors/julian-layen
 
 [1]: # (End of FR-Instruction ###############################################################################################)
