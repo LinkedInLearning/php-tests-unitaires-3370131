@@ -8,20 +8,6 @@ La meilleure façon d'apprendre un langage est de l'utiliser dans la pratique. C
 
 Si vous êtes développeur d'applications, alors suivez ce guide complet pour intégrer des tests unitaires et appliquer le Clean Code en PHP. Avec Julian Layen, vous découvrirez l'importance des tests unitaires et du Clean Code, vous apprendrez à installer des outils comme PHPUnit, à écrire et à organiser vos tests, ainsi qu'à appliquer les principes de codage propre. Vous aborderez également des sujets avancés tels que l'intégration continue, le Test-Driven Development (TDD) et la couverture de code. Ainsi, vous serez en mesure d'améliorer la qualité et la maintenabilité de vos projets PHP.
 
-
-## Instructions
-
-Ce dossier Repository a des branches pour chacune des vidéos du cours. Vous pouvez utiliser le menu des Branches sur GitHub afin d’accéder aux passages qui vous intéressent. Vous pouvez également rajouter `/tree/BRANCH_NAME` à l’URL afin d’accéder à la branche qui vous intéresse. 
-
-
-## Installation
-
-1. Pour utiliser ces fichiers d’exercice, vous avez besoin de : 
-   - [Liste des logiciels/dépendances utiles à la formation] 
-2. Clonez ce dossier Repository sur votre machine locale (Mac), CMD (Windows), ou sur un outil GUI tel que SourceTree. 
-3. [Instructions spécifiques au cours] 
-
-
 ### Formateur
 
 **Julian Layen** 
