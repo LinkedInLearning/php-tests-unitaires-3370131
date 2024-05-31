@@ -1,0 +1,88 @@
+version: "3.4"
+
+services:
+    traefik:
+        image: "traefik:v2.10"
+        container_name: "traefik-unittest"
+        command:
+            #- "--log.level=DEBUG"
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--entrypoints.web.address=:80"
+        ports:
+            - "80:80"
+            - "8080:8080"
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+    php:
+        image: ${IMAGES_PREFIX:-}app-php
+        restart: unless-stopped
+        volumes:
+            - php_socket:/var/run/php
+        healthcheck:
+            interval: 10s
+            timeout: 3s
+            retries: 3
+            start_period: 30s
+        environment:
+            TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+            TRUSTED_HOSTS: ^${SERVER_NAME:-example\.com|localhost}|caddy$$
+
+    caddy:
+        image: ${IMAGES_PREFIX:-}app-caddy
+        restart: unless-stopped
+        depends_on:
+            - php
+        environment:
+            SERVER_NAME: ${SERVER_NAME:-unittest.localhost}, caddy:80
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.unittest.rule=Host(`unittest.localhost`)"
+            - "traefik.http.routers.unittest.entrypoints=web"
+        volumes:
+            - php_socket:/var/run/php
+            - caddy_data:/data
+            - caddy_config:/config
+
+    ###> doctrine/doctrine-bundle ###
+    database:
+        image: mysql:latest
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: unittest
+        volumes:
+            - database_data:/var/lib/mysql:rw
+    ###< doctrine/doctrine-bundle ###
+
+    phpmyadmin:
+        image: phpmyadmin:latest
+        restart: unless-stopped
+        depends_on:
+            - database
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.pma.rule=Host(`pma.localhost`)"
+            - "traefik.http.routers.pma.entrypoints=web"
+        environment:
+            PMA_HOST: database
+
+    mailhog:
+        image: mailhog/mailhog
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.mailhog.rule=Host(`localhost:8025`)"
+        ports:
+            - "1025:1025" # smtp server
+            - "8025:8025" # web ui
+
+volumes:
+    php_socket:
+    caddy_data:
+    caddy_config:
+
+    ###> doctrine/doctrine-bundle ###
+    database_data:
+    ###< doctrine/doctrine-bundle ###

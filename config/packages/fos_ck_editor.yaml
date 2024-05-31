@@ -1,0 +1,26 @@
+twig:
+  form_themes:
+    - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+fos_ck_editor:
+  configs:
+    inline:
+      inline: true
+      toolbar: inline
+      allowedContent: true
+      entities: false
+      htmlEncodeOutput: false
+    custom:
+      toolbar: standard
+      allowedContent: true
+      entities: false
+      htmlEncodeOutput: false
+
+  toolbars:
+    configs:
+      inline: ['@style', "-", "@paragraph", "-", "@color",  "-", "@link"]
+    items:
+      paragraph: [ 'NumberedList', 'BulletedList', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'Format']
+      style:  [ "Bold", "Italic", "UnderLine", "Strike" ]
+      color:  [ "TextColor", "BGColor" ]
+      link:   [ "Link" ]
+
