@@ -1,0 +1,8 @@
+version: "2"
+options:
+  verbose: true
+
+syncs:
+  laravel-sync:
+    src: './html/'
+    sync_excludes: ['.gitignore', '.git', '.docker', 'docker-compose.yml', 'docker-sync.yml', 'docker-compose-dev.yml', '.docker-sync', 'var/cache']

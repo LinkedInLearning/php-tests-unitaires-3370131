@@ -1,0 +1,90 @@
+name: Tests
+on: [push]
+jobs:
+  php-unit-and-functional-tests:
+    runs-on: ubuntu-20.04
+    services:
+      mariadb:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: test
+          MARIADB_USER: user
+          MARIADB_PASSWORD: user
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    strategy:
+      fail-fast: true
+      matrix:
+        php-versions: ['8.1']
+    steps:
+      # —— Setup Github actions —————————————————————————————————————————————
+      # https://github.com/actions/checkout (official)
+      - name: Git checkout placeholder-service
+        uses: actions/checkout@v2
+      # https://github.com/shivammathur/setup-php (community)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
+          tools: composer:v2
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
+        env:
+          update: true
+      - name: Setup Node 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      # —— Env ——————————————————————————————————————————————————————————————
+      - name: Check PHP Version
+        run: php -v
+      - name: Check Node Version
+        run: node -v
+      - name: Setup environments variables
+        run: cd html && cp .env.test .env.local
+      # —— Composer —————————————————————————————————————————————————————————
+      - name: Validate composer.json and composer.lock and Install Composer dependencies
+        run: cd html && composer validate --no-check-publish && composer install
+      # —— Symfony ——————————————————————————————————————————————————————————
+      - name: Check the Symfony console
+        run: cd html && bin/console -V
+      # —— PHP-CS-Fixer —————————————————————————————————————————————————————
+      - name: PHP-CS-Fixer
+        run: cd html && php vendor/bin/php-cs-fixer fix --diff --dry-run
+      # —— PHPStan ——————————————————————————————————————————————————————————
+      - name: PHPStan Static Analysis
+        run: cd html && vendor/bin/phpstan analyze --no-progress
+      # —— Linters ——————————————————————————————————————————————————————————
+      - name: Check Twig template
+        run: cd html && bin/console lint:twig templates
+      - name: Check yaml
+        run: cd html && bin/console lint:yaml config
+      - name: Check container
+        run: cd html && bin/console lint:container
+      # —— Migrations ———————————————————————————————————————————————————————
+      - name: Migrate
+        run: cd html && bin/console doctrine:migrations:migrate -n
+      - name: Force schema (doesn't work if not executed)
+        run: cd html && bin/console doctrine:schema:update -n --force
+      - name: Schema validate
+        run: cd html && bin/console doctrine:schema:validate
+      # —— Fixtures —————————————————————————————————————————————————————————
+      - name: Load fixtures
+        run: cd html && bin/console doctrine:fixtures:load -n
+      # —— FOS Js-routing ———————————————————————————————————————————————————
+      - name: Generate routes for js
+        run: cd html && composer run fos
+      # —— Webpack ——————————————————————————————————————————————————————————
+      - name: Yarn install
+        run: cd html && yarn install
+      - name: Install webpack encore
+        run: cd html && export NODE_OPTIONS=--openssl-legacy-provider; yarn encore production
+      # —— Tests ————————————————————————————————————————————————————————————
+      - name: PhpUnit
+        run: cd html && vendor/bin/phpunit --configuration phpunit-pipelines.xml
